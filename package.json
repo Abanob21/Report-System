@@ -1,0 +1,27 @@
+{
+  "name": "4-22",
+  "version": "1.0.0",
+  "description": "This project is a simple Node.js app to track car condition reports via QR code scans.",
+  "main": "generate_qr.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^2.2.0",
+    "csurf": "^1.2.2",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "helmet": "^8.1.0",
+    "multer": "^1.4.5-lts.2",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.10.1",
+    "qrcode": "^1.5.4"
+  }
+}
