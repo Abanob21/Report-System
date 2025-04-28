@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Hourly Report Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+
+    #notes-area {
+      grid-column: 1 / -1;
+    }
+
+    .hour-note {
+      margin-bottom: 1rem;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 4px;
+    }
+
+    button {
+      grid-column: 1 / -1;
+      padding: 0.75rem;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .back-home {
+      display: inline-block;
+      margin-top: 1.5rem;
+      color: #3498db;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Hourly Report Generator</h2>
+    <form action="/generate-report" method="POST">
+      <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required>
+      </div>
+      <div>
+        <label for="startTime">Start Time:</label>
+        <input type="time" id="startTime" name="startTime" required>
+      </div>
+      <div>
+        <label for="endTime">End Time:</label>
+        <input type="time" id="endTime" name="endTime" required>
+      </div>
+      <div class="full-width">
+        <label for="status">Status:</label>
+        <select id="status" name="status" required>
+          <option value="Clear">Clear</option>
+          <option value="Incident">Incident</option>
+        </select>
+      </div>
+      <div id="notes-area"></div>
+      <button type="submit">Generate Report</button>
+    </form>
+    <a href="/" class="back-home">Return Home</a>
+  </div>
+
+  <script>
+    const notesArea = document.getElementById('notes-area');
+    const startTimeInput = document.querySelector('[name="startTime"]');
+    const endTimeInput = document.querySelector('[name="endTime"]');
+
+    function generateNotes() {
+      const start = startTimeInput.value;
+      const end = endTimeInput.value;
+
+      if (!start || !end) return;
+
+      const sHour = parseInt(start.split(':')[0]);
+      const eHour = parseInt(end.split(':')[0]);
+
+      let hours = [];
+      if (eHour >= sHour) {
+        for (let h = sHour; h <= eHour; h++) hours.push(h);
+      } else {
+        for (let h = sHour; h < 24; h++) hours.push(h);
+        for (let h = 0; h <= eHour; h++) hours.push(h);
+      }
+
+      notesArea.innerHTML = hours.map(h => `
+                <div class="hour-note">
+                    <label>Note for ${h}:00</label>
+                    <input type="text" name="notes_${h}" placeholder="Enter notes">
+                </div>
+            `).join('');
+    }
+
+    startTimeInput.addEventListener('change', generateNotes);
+    endTimeInput.addEventListener('change', generateNotes);
+  </script>
+</body>
+
+</html>

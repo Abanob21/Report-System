@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --success-color: #2ecc71;
+      --warning-color: #f1c40f;
+      --danger-color: #e74c3c;
+      --text-color: #2c3e50;
+      --bg-color: #f8f9fa;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 20px;
+      color: var(--text-color);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .back-btn {
+      padding: 0.8rem 1.5rem;
+      background-color: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .back-btn:hover {
+      background-color: #2980b9;
+    }
+
+    .section-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    .section-wrapper {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 0 0 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-title i {
+      font-size: 1.2em;
+      color: var(--primary-color);
+    }
+
+    .submission {
+      background: var(--bg-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .timestamp {
+      font-size: 0.9rem;
+      color: #7f8c8d;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .data-item {
+      margin-bottom: 0.75rem;
+    }
+
+    .data-label {
+      font-weight: 600;
+      color: #7f8c8d;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .data-label i {
+      width: 20px;
+      color: var(--primary-color);
+    }
+
+    .gas-visual {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .gas-thermometer {
+      width: 200px;
+      height: 20px;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .gas-fill {
+      height: 100%;
+      background: var(--success-color);
+      border-radius: 10px;
+    }
+
+    .gas-percentage {
+      font-weight: 600;
+      color: var(--success-color);
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .image-grid img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 2px solid #eee;
+    }
+
+    .incident-description {
+      white-space: pre-wrap;
+      background: white;
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid #eee;
+      margin-top: 0.5rem;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 2rem;
+      color: #95a5a6;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .section-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1><i class="fas fa-user-shield"></i>Admin Dashboard</h1>
+    <a href="/" class="back-btn">
+      <i class="fas fa-home"></i>
+      Return Home
+    </a>
+  </div>
+
+  <div class="section-container">
+    <!-- Vehicle Inspections Section -->
+    <div class="section-wrapper">
+      <div class="section-title">
+        <i class="fas fa-car-side"></i>
+        Vehicle Inspections
+      </div>
+      <% if (carRecords && carRecords.length> 0) { %>
+        <% carRecords.forEach(car=> { %>
+          <div class="submission">
+            <div class="timestamp">
+              <i class="fas fa-clock"></i>
+              <%= car.timestamp || 'No timestamp' %>
+            </div>
+            <div class="data-grid">
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-car"></i>
+                  Unit Number:
+                </div>
+                <%= car.carUnitNumber || 'N/A' %>
+              </div>
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-user"></i>
+                  Driver:
+                </div>
+                <%= car.driverName || 'N/A' %>
+              </div>
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-map-marker"></i>
+                  Location:
+                </div>
+                <%= car.location || 'N/A' %>
+              </div>
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-broom"></i>
+                  Condition:
+                </div>
+                <%= car.carCondition ? car.carCondition.replace(/;/g, ', ' ) : 'N/A' %>
+              </div>
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-car-crash"></i>
+                  Damage:
+                </div>
+                <%= car.damageDescription || 'None reported' %>
+              </div>
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-tools"></i>
+                  Maintenance:
+                </div>
+                <%= car.maintenanceNeeds ? car.maintenanceNeeds.replace(/;/g, ', ' ) : 'None reported' %>
+              </div>
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-check-circle"></i>
+                  Safe for Next Shift:
+                </div>
+                <%= car.safeForNextShift || 'N/A' %>
+              </div>
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-tachometer-alt"></i>
+                  Mileage:
+                </div>
+                <%= car.mileage || 'N/A' %>
+              </div>
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-gas-pump"></i>
+                  Gas Level:
+                </div>
+                <div class="gas-visual">
+                  <% const gasMap={ 'Empty' : '0%' , '1/4' : '25%' , 'Half' : '50%' , '3/4' : '75%' , 'Full' : '100%' }; const
+                    gasValue=gasMap[car.gasLevel] || '0%' ; const displayText=car.gasLevel ? `${car.gasLevel} (${gasValue})` : 'N/A' ;
+                    %>
+                    <div class="gas-thermometer">
+                      <div class="gas-fill" style="width: <%= gasValue %>;"></div>
+                    </div>
+                    <span class="gas-percentage">
+                      <%= displayText %>
+                    </span>
+                </div>
+              </div>
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-exchange-alt"></i>
+                  Shift Status:
+                </div>
+                <%= car.shiftStatus || 'N/A' %>
+              </div>
+              <% if (car.shiftStatus==='Ending' ) { %>
+                <div class="data-item">
+                  <div class="data-label">
+                    <i class="fas fa-parking"></i>
+                    Returned to Parking:
+                  </div>
+                  <%= car.returnedToParking || 'N/A' %>
+                </div>
+                <% } %>
+                  <% if (car.imagePaths.length> 0) { %>
+                    <div class="data-item full-width">
+                      <div class="data-label">
+                        <i class="fas fa-images"></i>
+                        Images:
+                      </div>
+                      <div class="image-grid">
+                        <% car.imagePaths.forEach(img=> { %>
+                          <img src="/uploads/<%= img %>" alt="Vehicle image">
+                          <% }) %>
+                      </div>
+                    </div>
+                    <% } %>
+            </div>
+          </div>
+          <% }) %>
+            <% } else { %>
+              <div class="no-data">No vehicle inspections found</div>
+              <% } %>
+    </div>
+
+    <!-- Hourly Reports Section -->
+    <div class="section-wrapper">
+      <div class="section-title">
+        <i class="fas fa-clock"></i>
+        Hourly Reports
+      </div>
+      <% if (rptRecords && rptRecords.length> 0) { %>
+        <% const reportGroups={}; rptRecords.forEach(report=> {
+          const groupKey = `${report.timestamp}|${report.name}|${report.location}`;
+          if (!reportGroups[groupKey]) {
+          reportGroups[groupKey] = {
+          timestamp: report.timestamp,
+          name: report.name,
+          location: report.location,
+          entries: []
+          };
+          }
+          reportGroups[groupKey].entries.push(report);
+          });
+          %>
+          <% Object.values(reportGroups).forEach(group=> { %>
+            <div class="submission">
+              <div class="timestamp">
+                <i class="fas fa-calendar-day"></i>
+                <%= group.timestamp || 'No timestamp' %>
+              </div>
+              <div class="data-grid">
+                <div class="data-item">
+                  <div class="data-label">
+                    <i class="fas fa-user-tag"></i>
+                    Name:
+                  </div>
+                  <%= group.name || 'N/A' %>
+                </div>
+                <div class="data-item">
+                  <div class="data-label">
+                    <i class="fas fa-map-pin"></i>
+                    Location:
+                  </div>
+                  <%= group.location || 'N/A' %>
+                </div>
+                <div class="data-item full-width">
+                  <div class="data-label">
+                    <i class="fas fa-list"></i>
+                    Hourly Entries:
+                  </div>
+                  <% group.entries.forEach(report=> { %>
+                    <div class="hour-entry">
+                      <div class="data-label">
+                        <i class="fas fa-hourglass-half"></i>
+                        <%= report.reportHour || 'N/A' %>:
+                      </div>
+                      <div><strong>Status:</strong>
+                        <%= report.status || 'N/A' %>
+                      </div>
+                      <div><strong>Notes:</strong>
+                        <%= report.notes || 'None' %>
+                      </div>
+                    </div>
+                    <% }) %>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+              <% } else { %>
+                <div class="no-data">No hourly reports found</div>
+                <% } %>
+    </div>
+
+    <!-- Incident Reports Section -->
+    <div class="section-wrapper">
+      <div class="section-title">
+        <i class="fas fa-exclamation-triangle"></i>
+        Incident Reports
+      </div>
+      <% if (incidentRecords && incidentRecords.length> 0) { %>
+        <% incidentRecords.forEach(incident=> { %>
+          <div class="submission">
+            <div class="timestamp">
+              <i class="fas fa-calendar-alt"></i>
+              <%= incident.timestamp || 'No timestamp' %>
+            </div>
+            <div class="data-grid">
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-user"></i>
+                  Reporter:
+                </div>
+                <%= incident.reporter || 'N/A' %>
+              </div>
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-map-marker-alt"></i>
+                  Location:
+                </div>
+                <%= incident.location || 'N/A' %>
+              </div>
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-users"></i>
+                  Persons Involved:
+                </div>
+                <%= incident.personsInvolved || 'N/A' %>
+              </div>
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-location-arrow"></i>
+                  Incident Location:
+                </div>
+                <%= incident.incidentLocation || 'N/A' %>
+              </div>
+              <div class="data-item">
+                <div class="data-label">
+                  <i class="fas fa-clock"></i>
+                  Incident Time:
+                </div>
+                <%= incident.incidentTime || 'N/A' %>
+              </div>
+              <div class="data-item full-width">
+                <div class="data-label">
+                  <i class="fas fa-file-alt"></i>
+                  Description:
+                </div>
+                <div class="incident-description">
+                  <%= incident.description || 'No description provided' %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+            <% } else { %>
+              <div class="no-data">No incident reports found</div>
+              <% } %>
+    </div>
+  </div>
+</body>
+
+</html>

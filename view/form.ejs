@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Car Check Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+    }
+
+    .error {
+      color: #e74c3c;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      background: #fadbd8;
+      border-radius: 4px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .checkbox-group {
+      margin-bottom: 1rem;
+    }
+
+    .checkbox-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .checkbox-item label {
+      font-weight: normal;
+      margin-left: 0.5rem;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    button {
+      grid-column: 1 / -1;
+      padding: 0.75rem;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    .gas-container {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 6px;
+    }
+
+    .gas-meter {
+      width: 100%;
+      margin: 1rem 0;
+    }
+
+    .gas-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+      color: #666;
+    }
+
+    .gas-percentage {
+      color: #2ecc71;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .gas-validation {
+      color: #e74c3c;
+      font-size: 0.9em;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .preselected-unit {
+      background: #f8f9fa;
+      padding: 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      color: #2c3e50;
+      border: 2px solid #3498db;
+    }
+
+    @media (max-width: 600px) {
+      form {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Car Check Form</h2>
+    <% if (error) { %>
+      <div class="error">
+        <%= error %>
+      </div>
+      <% } %>
+
+        <form action="/car" method="POST" enctype="multipart/form-data">
+          <% if (selectedUnit) { %>
+            <div class="full-width">
+              <label>Selected Vehicle:</label>
+              <div class="preselected-unit">
+                <%= selectedUnit %>
+              </div>
+              <input type="hidden" name="carUnitNumber" value="<%= selectedUnit %>">
+            </div>
+            <% } else { %>
+              <div>
+                <label for="carUnitNumber">Car Unit Number:</label>
+                <select id="carUnitNumber" name="carUnitNumber" required>
+                  <% carIds.forEach(id=> { %>
+                    <option value="<%= id %>">
+                      <%= id %>
+                    </option>
+                    <% }) %>
+                </select>
+              </div>
+              <% } %>
+
+                <div>
+                  <label for="driverName">Driver Name:</label>
+                  <input type="text" id="driverName" name="driverName" required>
+                </div>
+
+                <div class="full-width">
+                  <label for="location">Unit Out To Location:</label>
+                  <input type="text" id="location" name="location" required>
+                </div>
+
+                <div class="full-width">
+                  <label>Car Condition:</label>
+                  <div class="checkbox-group">
+                    <% conditions.forEach(condition=> { %>
+                      <div class="checkbox-item">
+                        <input type="checkbox" id="condition-<%= condition.toLowerCase().replace(' ', '-') %>"
+                          name="carCondition" value="<%= condition %>">
+                        <label for="condition-<%= condition.toLowerCase().replace(' ', '-') %>">
+                          <%= condition %>
+                        </label>
+                      </div>
+                      <% }) %>
+                  </div>
+                </div>
+
+                <div class="full-width">
+                  <label>Maintenance Needed:</label>
+                  <div class="checkbox-group">
+                    <% maintenanceOptions.forEach(option=> { %>
+                      <div class="checkbox-item">
+                        <input type="checkbox" id="maintenance-<%= option.toLowerCase().replace(' ', '-') %>"
+                          name="maintenance" value="<%= option %>">
+                        <label for="maintenance-<%= option.toLowerCase().replace(' ', '-') %>">
+                          <%= option %>
+                        </label>
+                      </div>
+                      <% }) %>
+                  </div>
+                </div>
+
+                <div class="full-width">
+                  <label for="damageDescription">Damage Description:</label>
+                  <input type="text" id="damageDescription" name="damageDescription">
+                </div>
+
+                <div>
+                  <label for="safeForNextShift">Safe for Next Shift?</label>
+                  <select id="safeForNextShift" name="safeForNextShift" required>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="mileage">Mileage:</label>
+                  <input type="number" id="mileage" name="mileage" required min="0">
+                </div>
+
+                <div class="full-width gas-container">
+                  <label>Gas Level:</label>
+                  <input type="range" id="gasLevel" min="0" max="4" step="1" list="gas-levels" class="gas-meter">
+                  <datalist id="gas-levels" class="gas-labels">
+                    <option value="0" label="Empty"></option>
+                    <option value="1" label="1/4"></option>
+                    <option value="2" label="1/2"></option>
+                    <option value="3" label="3/4"></option>
+                    <option value="4" label="Full"></option>
+                  </datalist>
+                  <div class="gas-labels">
+                    <span>Empty</span>
+                    <span>1/4</span>
+                    <span>1/2</span>
+                    <span>3/4</span>
+                    <span>Full</span>
+                  </div>
+                  <div class="gas-percentage" id="gasPercentage">50%</div>
+                  <input type="hidden" id="gasLevelText" name="gasLevel" value="Half">
+                  <div class="gas-validation" id="gasError"></div>
+                </div>
+
+                <div>
+                  <label for="shiftStatus">Shift Status:</label>
+                  <select id="shiftStatus" name="shiftStatus" required>
+                    <option value="Starting">Starting</option>
+                    <option value="Ending">Ending</option>
+                  </select>
+                </div>
+
+                <div id="endingFields" class="full-width">
+                  <label for="returnedToParking">Returned to Parking?</label>
+                  <select id="returnedToParking" name="returnedToParking">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+
+                <div class="full-width">
+                  <label for="unsafeImages">Upload Images (if not safe):</label>
+                  <input type="file" id="unsafeImages" name="unsafeImages[]" multiple accept="image/*">
+                </div>
+
+                <button type="submit">Submit</button>
+        </form>
+        <a href="/" style="display: inline-block; margin-top: 1.5rem; color: #3498db; text-decoration: none;">
+          Return Home
+        </a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const gasLevel = document.getElementById('gasLevel');
+      const gasPercentage = document.getElementById('gasPercentage');
+      const gasLevelText = document.getElementById('gasLevelText');
+      const gasError = document.getElementById('gasError');
+
+      const gasLabels = ['Empty', '1/4', 'Half', '3/4', 'Full'];
+      const percentages = ['0%', '25%', '50%', '75%', '100%'];
+
+      gasLevel.value = 2;
+      gasLevelText.value = 'Half';
+      gasPercentage.textContent = '50%';
+
+      const updateGasDisplay = () => {
+        const value = parseInt(gasLevel.value);
+        gasPercentage.textContent = percentages[value];
+        gasLevelText.value = gasLabels[value];
+        gasError.style.display = 'none';
+      };
+
+      gasLevel.addEventListener('input', updateGasDisplay);
+
+      document.querySelector('form').addEventListener('submit', (e) => {
+        let valid = true;
+
+        if (!gasLevelText.value) {
+          gasError.textContent = 'Please select a gas level';
+          gasError.style.display = 'block';
+          valid = false;
+        }
+
+        const mileageInput = document.getElementById('mileage');
+        if (!mileageInput.value || isNaN(mileageInput.value)) {
+          mileageInput.setCustomValidity('Please enter a valid mileage number');
+          valid = false;
+        } else {
+          mileageInput.setCustomValidity('');
+        }
+
+        if (!valid) {
+          e.preventDefault();
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
